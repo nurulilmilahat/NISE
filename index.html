@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NISE - Nurul Ilmi Smart Exam</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         body { margin: 0; font-family: sans-serif; }
         #root { min-height: 100vh; }
     </style>
-</head>
+   </head>
 <body>
     <div id="root"></div>
 
@@ -28,7 +29,7 @@
     }
     </script>
 
-    <script type="module">
+    <script type="text/babel" data-type="module">
         import React, { useState, useEffect, useRef } from 'react';
         import { createRoot } from 'react-dom/client';
         import { 
@@ -54,7 +55,7 @@
             appId: "1:685241504060:web:af50f4b77448c56901ce39",
             measurementId: "G-ZCF5839LV3"
         };
-
+const appId = "nise-2026";
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
