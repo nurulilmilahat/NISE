@@ -4,64 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NISE - Nurul Ilmi Smart Exam</title>
-    <!-- Link di bawah ini supaya React dan Tailwind bisa jalan langsung -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; font-family: sans-serif; }
+        #root { min-height: 100vh; }
+    </style>
 </head>
 <body>
     <div id="root"></div>
 
-    <script type="text/babel">
+    <!-- Script ini memungkinkan kita pakai 'import' langsung di browser -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18",
+        "react-dom": "https://esm.sh/react-dom@18",
+        "react-dom/client": "https://esm.sh/react-dom@18/client",
+        "lucide-react": "https://esm.sh/lucide-react",
+        "firebase/app": "https://esm.sh/firebase@10/app",
+        "firebase/auth": "https://esm.sh/firebase@10/auth",
+        "firebase/firestore": "https://esm.sh/firebase@10/firestore"
+      }
+    }
+    </script>
+
+    <script type="module">
         import React, { useState, useEffect, useRef } from 'react';
-import { 
-  ChevronRight, ChevronLeft, CheckCircle, BookOpen, RefreshCcw, 
-  Lock, Eye, X, LayoutDashboard, Database, PlusCircle, Trash2, LogOut, 
-  Plus, Save, Copy, ArrowUp, ArrowDown, Edit3, UploadCloud, Check, AlertCircle,
-  Settings, Clock, User, EyeOff, Shuffle, List, Calendar,
-  Bold, Italic, Underline, Superscript, Subscript, AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  FolderPlus, Folder, FolderOpen, ArrowLeft, GripVertical, MoveUp, History, FileText, Filter,
-  ArrowDownWideNarrow, SlidersHorizontal, Download
-} from 'lucide-react';
-import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged 
-} from 'firebase/auth';
-import { 
-  getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, updateDoc, writeBatch
-} from 'firebase/firestore';
+        import { createRoot } from 'react-dom/client';
+        import { 
+            ChevronRight, ChevronLeft, CheckCircle, BookOpen, RefreshCcw, Lock, Eye, X, 
+            LayoutDashboard, Database, PlusCircle, Trash2, LogOut, Plus, Save, Copy, 
+            ArrowUp, ArrowDown, Edit3, UploadCloud, Check, AlertCircle, Settings, Clock, 
+            User, EyeOff, Shuffle, List, Calendar, Bold, Italic, Underline, Superscript, 
+            Subscript, AlignLeft, AlignCenter, AlignRight, AlignJustify, FolderPlus, 
+            FolderMinus, FolderOpen, ArrowLeft, GripVertical, MoveUp, History, FileText, 
+            Filter, ArrowDownWideNarrow, SlidersHorizontal, Download 
+        } from 'lucide-react';
+        import { initializeApp } from 'firebase/app';
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
+        import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
 
-// --- KONFIGURASI FIREBASE ---
-const firebaseConfig = {
-  apiKey: "AIzaSyBOJY-vbe2bI_4ZkICQwjk7ddBgaS3Pn_w",
-  authDomain: "nise-2026.firebaseapp.com",
-  projectId: "nise-2026",
-  storageBucket: "nise-2026.firebasestorage.app",
-  messagingSenderId: "685241504060",
-  appId: "1:685241504060:web:af50f4b77448c56901ce39",
-  measurementId: "G-ZCF5839LV3"
-};
+        // --- KONFIGURASI FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOJY-vbe2bI_4ZkICQwjk7ddBgaS3Pn_w",
+            authDomain: "nise-2026.firebaseapp.com",
+            projectId: "nise-2026",
+            storageBucket: "nise-2026.firebasestorage.app",
+            messagingSenderId: "685241504060",
+            appId: "1:685241504060:web:af50f4b77448c56901ce39",
+            measurementId: "G-ZCF5839LV3"
+        };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'nise-app-v1';
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-// --- KONSTANTA ---
-const SUBJECT_LIST = [
-  "Adab", "Akidah", "Bahasa Indonesia", "Bahasa Inggris", 
-  "Durus Al-Lughah Al-Arabiyah", "Ekstrakurikuler", "Fikih", "Hadis", 
-  "Ilmu Pengetahuan Alam", "Ilmu Pengetahuan Sosial", "Khat", "Kitabah", 
-  "Matematika", "Nahwu", "Pendidikan Kewarganegaraan", 
-  "Penjasorkes / Olahraga", "Qiraah wal Kitabah", "Saraf", 
-  "Sirah Nabawiah", "Ta'bir", "Tafsir", "Tajwid"
-];
+        // --- KONSTANTA ---
+        const SUBJECT_LIST = ["Adab", "Akidah", "Bahasa Indonesia", "Bahasa Inggris", "Durus Al-Lughah Al-Arabiyah", "Ekstrakurikuler", "Fikih", "Hadis", "Ilmu Pengetahuan Alam", "Ilmu Pengetahuan Sosial", "Khat", "Kitabah", "Matematika", "Nahwu", "Pendidikan Kewarganegaraan", "Penjasorkes / Olahraga", "Qiraah wal Kitabah", "Saraf", "Sirah Nabawiyah", "Ta'bir", "Tafsir", "Tajwid"];
+        const CLASS_LIST = ["VII", "VIII", "IX"];
+        const MCQ_LABELS = ['A', 'B', 'C', 'D'];
 
-const CLASS_LIST = ["VII", "VIII", "IX"];
-const MCQ_LABELS = ['A', 'B', 'C', 'D'];
-
-const App = () => {
+        // --- KOMPONEN UTAMA ---
+        const App = () => {
   const [user, setUser] = useState(null);
   const [view, setView] = useState('front'); 
   const [teacherTab, setTeacherTab] = useState('results');
@@ -1496,20 +1500,8 @@ const App = () => {
     </div>
   );
 };
-
-export default App;
-        
-        const App = () => {
-            return (
-                <div className="p-10 text-center">
-                    <h1 className="text-2xl font-bold">Platform NISE sedang loading...</h1>
-                    <p>Pastikan kode dari Gemini sudah ditempel di sini.</p>
-                </div>
-            );
-        };
-
-        // Bagian ini untuk menampilkan kodenya ke layar
-        const root = ReactDOM.createRoot(document.getElementById('root'));
+ 
+        const root = createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
 </body>
