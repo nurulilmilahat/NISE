@@ -50,13 +50,13 @@
 
     // --- KONFIGURASI FIREBASE ---
     const firebaseConfig = {
-        apiKey: "AIzaSyBOJY-vbe2bI_4ZkICQwjk7ddBgaS3Pn_w",
-        authDomain: "nise-2026.firebaseapp.com",
-        projectId: "nise-2026",
-        storageBucket: "nise-2026.firebasestorage.app",
-        messagingSenderId: "685241504060",
-        appId: "1:685241504060:web:af50f4b77448c56901ce39",
-        measurementId: "G-ZCF5839LV3"
+    apiKey: "AIzaSyBOJY-vbe2bI_4ZkICQwjk7ddBgaS3Pn_w",
+    authDomain: "nise-2026.firebaseapp.com",
+    projectId: "nise-2026",
+    storageBucket: "nise-2026.firebasestorage.app",
+    messagingSenderId: "685241504060",
+    appId: "1:685241504060:web:af50f4b77448c56901ce39",
+    measurementId: "G-ZCF5839LV3"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -143,14 +143,14 @@
 
   useEffect(() => {
     if (!user) return;
-    const unsubExams = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'exams'), (sn) => {
+    const unsubExams = onSnapshot(collection(db, 'artifacts', projectDbId, 'public', 'data', 'exams'), (sn) => {
       setExamFiles(sn.docs.map(d => ({ ...d.data(), id: d.id })));
       setLoading(false);
     });
-    const unsubFolders = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'folders'), (sn) => {
+    const unsubFolders = onSnapshot(collection(db, 'artifacts', projectDbId, 'public', 'data', 'folders'), (sn) => {
         setFolders(sn.docs.map(d => ({ ...d.data(), id: d.id })));
     });
-    const unsubResults = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'quiz_results'), (sn) => {
+    const unsubResults = onSnapshot(collection(db, 'artifacts', projectDbId, 'public', 'data', 'quiz_results'), (sn) => {
       setResults(sn.docs.map(d => ({ ...d.data(), id: d.id })));
     });
     return () => { unsubExams(); unsubFolders(); unsubResults(); };
@@ -241,7 +241,7 @@
     try {
       const batch = writeBatch(db);
       selectedResultIds.forEach(id => {
-        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'quiz_results', id);
+        const docRef = doc(db, 'artifacts', projectDbId, 'public', 'data', 'quiz_results', id);
         batch.delete(docRef);
       });
       await batch.commit();
@@ -264,7 +264,7 @@
   const handleDrop = async (folderId) => {
     if (!draggedFileId) return;
     try {
-      const examRef = doc(db, 'artifacts', appId, 'public', 'data', 'exams', draggedFileId);
+      const examRef = doc(db, 'artifacts', projectDbId, 'public', 'data', 'exams', draggedFileId);
       await updateDoc(examRef, { folderId: folderId });
     } catch (e) {
       console.error("Gagal memindahkan file:", e);
@@ -296,7 +296,7 @@
   const handleUpdateMetadata = async () => {
     if (!editingExam || !editingExam.title.trim()) return;
     try {
-      const examRef = doc(db, 'artifacts', appId, 'public', 'data', 'exams', editingExam.id);
+      const examRef = doc(db, 'artifacts', projectDbId, 'public', 'data', 'exams', editingExam.id);
       await updateDoc(examRef, {
         title: String(editingExam.title),
         subject: String(editingExam.subject),
@@ -312,21 +312,21 @@
 
   const toggleVisibility = async (file) => {
     try {
-      const examRef = doc(db, 'artifacts', appId, 'public', 'data', 'exams', file.id);
+      const examRef = doc(db, 'artifacts', projectDbId, 'public', 'data', 'exams', file.id);
       await updateDoc(examRef, { visible: !file.visible });
     } catch (e) { console.error(e); }
   };
 
   const toggleRandomize = async (file) => {
     try {
-      const examRef = doc(db, 'artifacts', appId, 'public', 'data', 'exams', file.id);
+      const examRef = doc(db, 'artifacts', projectDbId, 'public', 'data', 'exams', file.id);
       await updateDoc(examRef, { isRandom: !file.isRandom });
     } catch (e) { console.error(e); }
   };
 
   const updateSchedule = async (fileId, field, value) => {
     try {
-      const examRef = doc(db, 'artifacts', appId, 'public', 'data', 'exams', fileId);
+      const examRef = doc(db, 'artifacts', projectDbId, 'public', 'data', 'exams', fileId);
       await updateDoc(examRef, { [field]: value });
     } catch (e) { console.error(e); }
   };
@@ -334,7 +334,7 @@
   const handleCreateFolder = async () => {
       if (!newFolderName.trim()) return;
       try {
-          await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'folders'), {
+          await addDoc(collection(db, 'artifacts', projectDbId, 'public', 'data', 'folders'), {
               name: newFolderName,
               timestamp: new Date().toISOString()
           });
@@ -346,9 +346,9 @@
   const handleDeleteFolder = async (id) => {
       const filesInFolder = examFiles.filter(f => f.folderId === id);
       for (const file of filesInFolder) {
-          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'exams', file.id), { folderId: null });
+          await updateDoc(doc(db, 'artifacts', projectDbId, 'public', 'data', 'exams', file.id), { folderId: null });
       }
-      await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'folders', id));
+      await deleteDoc(doc(db, 'artifacts', projectDbId, 'public', 'data', 'folders', id));
       if (currentFolderId === id) setCurrentFolderId(null);
   };
 
@@ -361,7 +361,7 @@
   const handleSaveSoalToExisting = async (file) => {
     if (!newQuestion.q.trim() || newQuestion.q === '<br>') return;
     try {
-      const examRef = doc(db, 'artifacts', appId, 'public', 'data', 'exams', file.id);
+      const examRef = doc(db, 'artifacts', projectDbId, 'public', 'data', 'exams', file.id);
       let updatedQuestions = [...(file.questions || [])];
       
       if (editingSoalIdx !== null) {
@@ -465,7 +465,7 @@
     if (localQuestions.length === 0) return;
 
     try {
-      await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'exams'), {
+      await addDoc(collection(db, 'artifacts', projectDbId, 'public', 'data', 'exams'), {
         title: String(newFile.title),
         subject: String(newFile.subject),
         class: String(newFile.class),
@@ -510,7 +510,7 @@
     const final = total > 0 ? Math.round((pts / total) * 100) : 0;
     setScore(final); setMaxScore(total); setView('result');
     try {
-      await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'quiz_results'), {
+      await addDoc(collection(db, 'artifacts', projectDbId, 'public', 'data', 'quiz_results'), {
         student_name: String(studentData.name), 
         student_class: String(studentData.class), 
         subject: String(studentData.subject),
@@ -810,7 +810,7 @@
                                     </button>
                                     <button 
                                       onClick={() => {
-                                        if(window.confirm('Hapus data ini?')) deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'quiz_results', res.id));
+                                        if(window.confirm('Hapus data ini?')) deleteDoc(doc(db, 'artifacts', projectDbId, 'public', 'data', 'quiz_results', res.id));
                                       }} 
                                       className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                                     >
@@ -948,7 +948,7 @@
                               <button onClick={(e) => { e.stopPropagation(); setEditingExam(file); }} className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all" title="Edit Metadata">
                                 <Settings size={14}/>
                               </button>
-                              <button onClick={(e) => { e.stopPropagation(); if(window.confirm('Hapus file ujian ini?')) deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'exams', file.id)); }} className="p-2.5 bg-red-50 text-red-400 rounded-xl hover:bg-red-600 hover:text-white transition-all">
+                              <button onClick={(e) => { e.stopPropagation(); if(window.confirm('Hapus file ujian ini?')) deleteDoc(doc(db, 'artifacts', projectDbId, 'public', 'data', 'exams', file.id)); }} className="p-2.5 bg-red-50 text-red-400 rounded-xl hover:bg-red-600 hover:text-white transition-all">
                                 <Trash2 size={14}/>
                               </button>
                             </div>
@@ -1067,7 +1067,7 @@
                                       <button onClick={() => handleEditSoalInBank(q, qidx)} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all" title="Edit Soal"><Edit3 size={14}/></button>
                                       <button onClick={async () => {
                                           if(window.confirm('Hapus soal ini?')) {
-                                            const examRef = doc(db, 'artifacts', appId, 'public', 'data', 'exams', file.id);
+                                            const examRef = doc(db, 'artifacts', projectDbId, 'public', 'data', 'exams', file.id);
                                             const filtered = file.questions.filter((_, i) => i !== qidx);
                                             await updateDoc(examRef, { questions: filtered });
                                           }
