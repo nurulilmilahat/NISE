@@ -29,36 +29,42 @@
     }
     </script>
 
-    <script type="text/babel" data-type="module">
-        import React, { useState, useEffect, useRef } from 'react';
-        import { createRoot } from 'react-dom/client';
-        import { 
-            ChevronRight, ChevronLeft, CheckCircle, BookOpen, RefreshCcw, Lock, Eye, X, 
-            LayoutDashboard, Database, PlusCircle, Trash2, LogOut, Plus, Save, Copy, 
-            ArrowUp, ArrowDown, Edit3, UploadCloud, Check, AlertCircle, Settings, Clock, 
-            User, EyeOff, Shuffle, List, Calendar, Bold, Italic, Underline, Superscript, 
-            Subscript, AlignLeft, AlignCenter, AlignRight, AlignJustify, FolderPlus, 
-            FolderMinus, FolderOpen, ArrowLeft, GripVertical, MoveUp, History, FileText, 
-            Filter, ArrowDownWideNarrow, SlidersHorizontal, Download 
-        } from 'lucide-react';
-        import { initializeApp } from 'firebase/app';
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
-        import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
+   <script type="text/babel" data-type="module">
+    // Import langsung dari URL agar sinkron dengan Babel
+    import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18';
+    import { createRoot } from 'https://esm.sh/react-dom@18/client';
+    import { 
+        ChevronRight, ChevronLeft, CheckCircle, BookOpen, RefreshCcw, Lock, Eye, X, 
+        LayoutDashboard, Database, PlusCircle, Trash2, LogOut, Plus, Save, Copy, 
+        ArrowUp, ArrowDown, Edit3, UploadCloud, Check, AlertCircle, Settings, Clock, 
+        User, EyeOff, Shuffle, List, Calendar, Bold, Italic, Underline, Superscript, 
+        Subscript, AlignLeft, AlignCenter, AlignRight, AlignJustify, FolderPlus, 
+        FolderMinus, FolderOpen, ArrowLeft, GripVertical, MoveUp, History, FileText, 
+        Filter, ArrowDownWideNarrow, SlidersHorizontal, Download, Folder 
+    } from 'https://esm.sh/lucide-react';
 
-        // --- KONFIGURASI FIREBASE ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyBOJY-vbe2bI_4ZkICQwjk7ddBgaS3Pn_w",
-            authDomain: "nise-2026.firebaseapp.com",
-            projectId: "nise-2026",
-            storageBucket: "nise-2026.firebasestorage.app",
-            messagingSenderId: "685241504060",
-            appId: "1:685241504060:web:af50f4b77448c56901ce39",
-            measurementId: "G-ZCF5839LV3"
-        };
-const appId = "nise-2026";
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
+    // Gunakan gstatic untuk stabilitas Firebase di browser
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
+    import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, writeBatch, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
+
+    // --- KONFIGURASI FIREBASE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyBOJY-vbe2bI_4ZkICQwjk7ddBgaS3Pn_w",
+        authDomain: "nise-2026.firebaseapp.com",
+        projectId: "nise-2026",
+        storageBucket: "nise-2026.firebasestorage.app",
+        messagingSenderId: "685241504060",
+        appId: "1:685241504060:web:af50f4b77448c56901ce39",
+        measurementId: "G-ZCF5839LV3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Variabel ID database untuk path
+    const projectDbId = "nise-2026";
 
         // --- KONSTANTA ---
         const SUBJECT_LIST = ["Adab", "Akidah", "Bahasa Indonesia", "Bahasa Inggris", "Durus Al-Lughah Al-Arabiyah", "Ekstrakurikuler", "Fikih", "Hadis", "Ilmu Pengetahuan Alam", "Ilmu Pengetahuan Sosial", "Khat", "Kitabah", "Matematika", "Nahwu", "Pendidikan Kewarganegaraan", "Penjasorkes / Olahraga", "Qiraah wal Kitabah", "Saraf", "Sirah Nabawiyah", "Ta'bir", "Tafsir", "Tajwid"];
