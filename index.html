@@ -14,7 +14,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-import React, { useState, useEffect, useRef } from 'react';
+        import React, { useState, useEffect, useRef } from 'react';
 import { 
   ChevronRight, ChevronLeft, CheckCircle, BookOpen, RefreshCcw, 
   Lock, Eye, X, LayoutDashboard, Database, PlusCircle, Trash2, LogOut, 
@@ -1498,3 +1498,19 @@ const App = () => {
 };
 
 export default App;
+        
+        const App = () => {
+            return (
+                <div className="p-10 text-center">
+                    <h1 className="text-2xl font-bold">Platform NISE sedang loading...</h1>
+                    <p>Pastikan kode dari Gemini sudah ditempel di sini.</p>
+                </div>
+            );
+        };
+
+        // Bagian ini untuk menampilkan kodenya ke layar
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
