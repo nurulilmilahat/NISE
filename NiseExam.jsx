@@ -1,20 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  ChevronRight, ChevronLeft, CheckCircle, BookOpen, RefreshCcw, 
-  Lock, Eye, X, LayoutDashboard, Database, PlusCircle, Trash2, LogOut, 
+const { useState, useEffect, useRef } = React;
+const { 
+  ChevronRight, ChevronLeft, CheckCircle, BookOpen, RefreshCcw,
+  Lock, Eye, X, LayoutDashboard, Database, PlusCircle, Trash2, LogOut,
   Plus, Save, Copy, ArrowUp, ArrowDown, Edit3, UploadCloud, Check, AlertCircle,
   Settings, Clock, User, EyeOff, Shuffle, List, Calendar,
   Bold, Italic, Underline, Superscript, Subscript, AlignLeft, AlignCenter, AlignRight, AlignJustify,
   FolderPlus, Folder, FolderOpen, ArrowLeft, GripVertical, MoveUp, History, FileText, Filter,
-  ArrowDownWideNarrow, SlidersHorizontal, Download
-} from 'lucide-react';
-import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged 
-} from 'firebase/auth';
-import { 
-  getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, updateDoc, writeBatch
-} from 'firebase/firestore';
+  ArrowDownWideNarrow, SlidersHorizontal, Download 
+} = Lucide;
+
+const { initializeApp } = firebase;
+const { getAuth, signInAnonymously, onAuthStateChanged } = firebase;
+const { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, updateDoc, writeBatch } = firebase;
 
 // --- KONFIGURASI FIREBASE ---
 const firebaseConfig = {
@@ -1481,4 +1478,5 @@ const App = () => {
   );
 };
 
-export default App;
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
